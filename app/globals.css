@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Colores personalizados */
+    --primary: 277 100% 15%; /* #32004f */
+    --primary-foreground: 0 0% 100%; /* #ffffff */
+
+    --secondary: 43 98% 50%; /* #fdc001 */
+    --secondary-foreground: 0 0% 100%; /* #ffffff */
+
+    --accent: 0 0% 100%; /* #ffffff */
+    --accent-foreground: 277 100% 15%; /* #32004f */
+
+    --background: 277 100% 15%; /* #32004f */
+    --foreground: 0 0% 100%; /* #ffffff */
+
+    --card: 277 100% 20%; /* Ligeramente más claro que el fondo */
+    --card-foreground: 0 0% 100%; /* #ffffff */
+
+    --popover: 277 100% 20%;
+    --popover-foreground: 0 0% 100%;
+
+    --muted: 277 30% 30%;
+    --muted-foreground: 0 0% 80%;
+
+    --border: 277 30% 30%;
+    --input: 277 30% 30%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --ring: 43 98% 50%; /* #fdc001 */
+
+    --radius: 0.5rem;
+
+    /* Colores para gráficos */
+    --chart-1: 120, 75%, 50%; /* Verde */
+    --chart-2: 60, 100%, 50%; /* Amarillo */
+    --chart-3: 30, 100%, 50%; /* Naranja */
+    --chart-4: 0, 100%, 50%; /* Rojo */
+  }
+
+  .dark {
+    --background: 277 100% 15%; /* #32004f */
+    --foreground: 0 0% 100%; /* #ffffff */
+
+    --card: 277 100% 20%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 277 100% 20%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 277 100% 15%; /* #32004f */
+    --primary-foreground: 0 0% 100%; /* #ffffff */
+
+    --secondary: 43 98% 50%; /* #fdc001 */
+    --secondary-foreground: 0 0% 100%; /* #ffffff */
+
+    --muted: 277 30% 30%;
+    --muted-foreground: 0 0% 80%;
+
+    --accent: 0 0% 100%; /* #ffffff */
+    --accent-foreground: 277 100% 15%; /* #32004f */
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 277 30% 30%;
+    --input: 277 30% 30%;
+
+    --ring: 43 98% 50%; /* #fdc001 */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-poppins), sans-serif;
+  }
+
+  /* Estilos personalizados para los componentes */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90;
+  }
+
+  /* Estilos para los tooltips de los gráficos */
+  .recharts-tooltip-wrapper .recharts-default-tooltip {
+    @apply bg-card text-card-foreground border-border !important;
+  }
+}
+
+/* Estilos para impresión */
+@media print {
+  body {
+    @apply bg-white text-black;
+  }
+
+  .card {
+    @apply bg-white text-black border border-gray-300 shadow-none;
+  }
+}
