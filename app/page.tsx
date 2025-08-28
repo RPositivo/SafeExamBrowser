@@ -18,8 +18,8 @@ export default function Home() {
           </p>
         </div>
         <p className="text-muted-foreground mb-8 text-center">
-          Evalúe el comportamiento de su perro en una escala de 0 a 4, donde 0 significa "nunca" y 4 significa
-          "siempre".
+          Por favor, evalúe el comportamiento de su perro utilizando una escala de 0 a 4, donde 0 indica "nunca" y 4
+          indica "siempre".
         </p>
         <Questionnaire />
       </div>

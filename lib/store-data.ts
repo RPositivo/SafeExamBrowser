@@ -21,6 +21,16 @@ export async function storeQuestionnaire(data: {
     // Generar un ID único para este cuestionario
     const id = `cbarq-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
+    console.log("Iniciando almacenamiento de datos...")
+    console.log("Datos a almacenar:", {
+      id,
+      timestamp: new Date().toISOString(),
+      anamnesisData: data.anamnesisData,
+      cbarqAnswers: Object.keys(data.cbarqAnswers).length,
+      factorScores: Object.keys(data.factorScores).length,
+      specialBehaviorScores: data.specialBehaviorScores.length,
+    })
+
     const storedData: StoredData = {
       id,
       timestamp: new Date().toISOString(),
@@ -32,11 +42,13 @@ export async function storeQuestionnaire(data: {
 
     // Almacenar en Upstash KV
     await kv.set(id, storedData)
+    console.log("Datos almacenados en KV con éxito")
 
     // También mantener una lista de todos los IDs para facilitar la recuperación
     const existingIds = (await kv.get<string[]>("cbarq-ids")) || []
     existingIds.push(id)
     await kv.set("cbarq-ids", existingIds)
+    console.log("Lista de IDs actualizada, total:", existingIds.length)
 
     console.log("Datos almacenados correctamente con ID:", id)
 

@@ -13,9 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 
 interface AnamnesisData {
-  // Datos generales del animal
+  // Datos generales del perro
   petName: string
-  species: string
   breed: string
   age: string
   sex: string
@@ -24,11 +23,11 @@ interface AnamnesisData {
   acquisitionAge: string
   acquisitionSource: string
 
-  // Datos del propietario
-  ownerName: string
-  ownerPhone: string
-  ownerEmail: string
-  ownerAddress: string
+  // Datos del tutor
+  tutorName: string
+  tutorPhone: string
+  tutorEmail: string
+  tutorAddress: string
 
   // Descripción del problema principal
   mainProblem: string
@@ -67,7 +66,7 @@ interface AnamnesisData {
   // Eje V - Funcionamiento global
   overallFunctioning: string
   qualityOfLife: string
-  ownerExpectations: string
+  tutorExpectations: string
   treatmentGoals: string
 
   behaviorSequence: string
@@ -130,10 +129,10 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
   const calculateProgress = () => {
     const requiredFields = [
       "petName",
-      "species",
       "breed",
       "age",
       "sex",
+      "neutered",
       "ownerName",
       "ownerEmail",
       "mainProblem",
@@ -174,9 +173,9 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Información sobre su mascota</CardTitle>
+          <CardTitle>Información sobre su perro</CardTitle>
           <CardDescription>
-            Por favor complete la siguiente información para ayudarnos a entender mejor a su mascota y su situación
+            Por favor complete la siguiente información para ayudarnos a entender mejor a su perro y su situación
           </CardDescription>
         </CardHeader>
       </Card>
@@ -203,31 +202,18 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
           <Card>
             <CardHeader>
               <CardTitle>Información Básica</CardTitle>
-              <CardDescription>Datos generales sobre su mascota y usted</CardDescription>
+              <CardDescription>Datos generales sobre su perro y usted</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="petName">Nombre de su mascota *</Label>
+                  <Label htmlFor="petName">Nombre de su perro *</Label>
                   <Input
                     id="petName"
                     value={formData.petName || ""}
                     onChange={(e) => updateFormData("petName", e.target.value)}
                     placeholder="Ej: Max, Luna, etc."
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="species">Tipo de animal *</Label>
-                  <Select value={formData.species || ""} onValueChange={(value) => updateFormData("species", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione el tipo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="canino">Perro</SelectItem>
-                      <SelectItem value="felino">Gato</SelectItem>
-                      <SelectItem value="otro">Otro</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="breed">Raza *</Label>
@@ -297,7 +283,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="acquisitionSource">¿De dónde vino su mascota?</Label>
+                <Label htmlFor="acquisitionSource">¿De dónde vino su perro?</Label>
                 <Input
                   id="acquisitionSource"
                   value={formData.acquisitionSource || ""}
@@ -310,39 +296,39 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
                 <h3 className="text-lg font-medium mb-4">Sus Datos</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="ownerName">Su nombre completo *</Label>
+                    <Label htmlFor="tutorName">Su nombre completo *</Label>
                     <Input
-                      id="ownerName"
-                      value={formData.ownerName || ""}
-                      onChange={(e) => updateFormData("ownerName", e.target.value)}
+                      id="tutorName"
+                      value={formData.tutorName || ""}
+                      onChange={(e) => updateFormData("tutorName", e.target.value)}
                       placeholder="Nombre y apellidos"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="ownerPhone">Teléfono</Label>
+                    <Label htmlFor="tutorPhone">Teléfono</Label>
                     <Input
-                      id="ownerPhone"
-                      value={formData.ownerPhone || ""}
-                      onChange={(e) => updateFormData("ownerPhone", e.target.value)}
+                      id="tutorPhone"
+                      value={formData.tutorPhone || ""}
+                      onChange={(e) => updateFormData("tutorPhone", e.target.value)}
                       placeholder="Número de teléfono"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="ownerEmail">Email *</Label>
+                    <Label htmlFor="tutorEmail">Email *</Label>
                     <Input
-                      id="ownerEmail"
+                      id="tutorEmail"
                       type="email"
-                      value={formData.ownerEmail || ""}
-                      onChange={(e) => updateFormData("ownerEmail", e.target.value)}
+                      value={formData.tutorEmail || ""}
+                      onChange={(e) => updateFormData("tutorEmail", e.target.value)}
                       placeholder="su.email@ejemplo.com"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="ownerAddress">Dirección (opcional)</Label>
+                    <Label htmlFor="tutorAddress">Dirección (opcional)</Label>
                     <Input
-                      id="ownerAddress"
-                      value={formData.ownerAddress || ""}
-                      onChange={(e) => updateFormData("ownerAddress", e.target.value)}
+                      id="tutorAddress"
+                      value={formData.tutorAddress || ""}
+                      onChange={(e) => updateFormData("tutorAddress", e.target.value)}
                       placeholder="Ciudad, país"
                     />
                   </div>
@@ -357,16 +343,16 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
           <Card>
             <CardHeader>
               <CardTitle>Cuéntenos sobre el problema</CardTitle>
-              <CardDescription>Describa con detalle el comportamiento que le preocupa de su mascota</CardDescription>
+              <CardDescription>Describa con detalle el comportamiento que le preocupa de su perro</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="mainProblem">¿Cuál es el problema principal que tiene con su mascota? *</Label>
+                <Label htmlFor="mainProblem">¿Cuál es el problema principal que tiene con su perro? *</Label>
                 <Textarea
                   id="mainProblem"
                   value={formData.mainProblem || ""}
                   onChange={(e) => updateFormData("mainProblem", e.target.value)}
-                  placeholder="Describa con detalle qué hace su mascota que le preocupa. Por ejemplo: 'Mi perro ladra mucho cuando llegan visitas y no para hasta que se van. También salta encima de las personas y es muy difícil controlarlo.'"
+                  placeholder="Describa con detalle qué hace su perro que le preocupa. Por ejemplo: 'Mi perro ladra mucho cuando llegan visitas y no para hasta que se van. También salta encima de las personas y es muy difícil controlarlo.'"
                   rows={4}
                 />
               </div>
@@ -472,12 +458,12 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
         <TabsContent value="traits" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>La personalidad de su mascota</CardTitle>
-              <CardDescription>Ayúdenos a conocer cómo es su mascota en general</CardDescription>
+              <CardTitle>La personalidad de su perro</CardTitle>
+              <CardDescription>Ayúdenos a conocer cómo es su perro en general</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>¿Cómo describiría la personalidad de su mascota? (puede marcar varias opciones)</Label>
+                <Label>¿Cómo describiría la personalidad de su perro? (puede marcar varias opciones)</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {[
                     "Nervioso/Ansioso",
@@ -511,7 +497,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
 
               <div className="space-y-2">
                 <Label htmlFor="personalityDescription">
-                  Describa la personalidad de su mascota con sus propias palabras
+                  Describa la personalidad de su perro con sus propias palabras
                 </Label>
                 <Textarea
                   id="personalityDescription"
@@ -547,7 +533,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="cognitiveAbilities">¿Qué tan inteligente considera que es su mascota?</Label>
+                <Label htmlFor="cognitiveAbilities">¿Qué tan inteligente considera que es su perro?</Label>
                 <Textarea
                   id="cognitiveAbilities"
                   value={formData.cognitiveAbilities || ""}
@@ -564,9 +550,9 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
         <TabsContent value="health" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Salud de su mascota</CardTitle>
+              <CardTitle>Salud de su perro</CardTitle>
               <CardDescription>
-                La salud puede influir en el comportamiento, cuéntenos sobre la salud de su mascota
+                La salud puede influir en el comportamiento, cuéntenos sobre la salud de su perro
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -606,7 +592,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="painAssessment">¿Cree que su mascota siente dolor o molestias?</Label>
+                <Label htmlFor="painAssessment">¿Cree que su perro siente dolor o molestias?</Label>
                 <Textarea
                   id="painAssessment"
                   value={formData.painAssessment || ""}
@@ -648,7 +634,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
           <Card>
             <CardHeader>
               <CardTitle>Su hogar y rutina diaria</CardTitle>
-              <CardDescription>El ambiente donde vive su mascota puede influir en su comportamiento</CardDescription>
+              <CardDescription>El ambiente donde vive su perro puede influir en su comportamiento</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -674,7 +660,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="dailyRoutine">¿Cuál es la rutina diaria de su mascota?</Label>
+                <Label htmlFor="dailyRoutine">¿Cuál es la rutina diaria de su perro?</Label>
                 <Textarea
                   id="dailyRoutine"
                   value={formData.dailyRoutine || ""}
@@ -685,7 +671,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="exerciseEnrichment">¿Cuánto ejercicio hace su mascota?</Label>
+                <Label htmlFor="exerciseEnrichment">¿Cuánto ejercicio hace su perro?</Label>
                 <Select
                   value={formData.exerciseEnrichment || ""}
                   onValueChange={(value) => updateFormData("exerciseEnrichment", value)}
@@ -703,7 +689,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
               </div>
 
               <div className="space-y-2">
-                <Label>¿Qué cosas estresan a su mascota? (puede marcar varias opciones)</Label>
+                <Label>¿Qué cosas estresan a su perro? (puede marcar varias opciones)</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {[
                     "Ruidos fuertes (truenos, petardos)",
@@ -734,7 +720,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="managementPractices">¿Cómo manejan el comportamiento de su mascota en casa?</Label>
+                <Label htmlFor="managementPractices">¿Cómo manejan el comportamiento de su perro en casa?</Label>
                 <Textarea
                   id="managementPractices"
                   value={formData.managementPractices || ""}
@@ -753,19 +739,19 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
             <CardHeader>
               <CardTitle>Calidad de vida</CardTitle>
               <CardDescription>
-                Ayúdenos a entender cómo afecta el comportamiento de su mascota a su vida diaria
+                Ayúdenos a entender cómo afecta el comportamiento de su perro a su vida diaria
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>¿Cómo considera que está su mascota en general?</Label>
+                <Label>¿Cómo considera que está su perro en general?</Label>
                 <RadioGroup
                   value={formData.animalWelfare || ""}
                   onValueChange={(value) => updateFormData("animalWelfare", value)}
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="excelente" id="welfare-excelente" />
-                    <Label htmlFor="welfare-excelente">Excelente - Se ve feliz y relajada</Label>
+                    <Label htmlFor="welfare-excelente">Excelente - Se ve feliz y relajado</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="bueno" id="welfare-bueno" />
@@ -777,13 +763,13 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="deficiente" id="welfare-deficiente" />
-                    <Label htmlFor="welfare-deficiente">Mal - Se ve estresada o sufre mucho</Label>
+                    <Label htmlFor="welfare-deficiente">Mal - Se ve estresado o sufre mucho</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               <div className="space-y-2">
-                <Label>¿Qué tan buena mascota considera que es?</Label>
+                <Label>¿Qué tan buena perro considera que es?</Label>
                 <RadioGroup
                   value={formData.petFunction || ""}
                   onValueChange={(value) => updateFormData("petFunction", value)}
@@ -833,7 +819,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="familyImpact">¿Cómo afecta el comportamiento de su mascota a su vida familiar?</Label>
+                <Label htmlFor="familyImpact">¿Cómo afecta el comportamiento de su perro a su vida familiar?</Label>
                 <Textarea
                   id="familyImpact"
                   value={formData.familyImpact || ""}
@@ -845,7 +831,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
 
               <div className="space-y-2">
                 <Label htmlFor="overallFunctioning">
-                  En general, ¿cómo calificaría la calidad de vida con su mascota? *
+                  En general, ¿cómo calificaría la calidad de vida con su perro? *
                 </Label>
                 <RadioGroup
                   value={formData.overallFunctioning || ""}
@@ -869,7 +855,7 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="critico" id="func-critico" />
-                    <Label htmlFor="func-critico">Muy mala - Estoy considerando deshacerme de mi mascota</Label>
+                    <Label htmlFor="func-critico">Muy mala - Estoy considerando deshacerme de mi perro</Label>
                   </div>
                 </RadioGroup>
               </div>

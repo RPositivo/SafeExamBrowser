@@ -102,7 +102,7 @@ export function EmailForm({ answers, anamnesisData }: EmailFormProps) {
         <Alert variant={result.success ? "default" : "destructive"}>
           {result.success ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
           <AlertTitle>{result.success ? "Éxito" : "Error"}</AlertTitle>
-          <AlertDescription>{result.message}</AlertDescription>
+          <AlertDescription>{result.message.replace("mascota", "perro")}</AlertDescription>
         </Alert>
       )}
 

@@ -160,7 +160,7 @@ export function Results({ answers, anamnesisData }: ResultsProps) {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <h4 className="font-medium mb-2">Información del Animal</h4>
+                <h4 className="font-medium mb-2">Información del Perro</h4>
                 <p>
                   <strong>Nombre:</strong> {anamnesisData.petName}
                 </p>
@@ -370,7 +370,7 @@ export function Results({ answers, anamnesisData }: ResultsProps) {
               Almacenando...
             </>
           ) : (
-            "Almacenar Datos"
+            "Almacenar Datos del Perro"
           )}
         </Button>
       </div>
