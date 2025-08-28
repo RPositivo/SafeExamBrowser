@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { cbarqQuestions, factorNames, specialBehaviors } from "@/lib/cbarq-data"
 import { Results } from "@/components/results"
+import { Anamnesis } from "@/components/anamnesis"
 
 // Valor especial para "No se ha observado"
 export const NOT_OBSERVED = -1
@@ -17,6 +18,8 @@ export function Questionnaire() {
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [currentTab, setCurrentTab] = useState("stranger-directed-aggression")
   const [showResults, setShowResults] = useState(false)
+  const [currentSection, setCurrentSection] = useState<"anamnesis" | "questionnaire" | "results">("anamnesis")
+  const [anamnesisData, setAnamnesisData] = useState<any>(null)
 
   const handleAnswerChange = (questionId: string, value: number) => {
     setAnswers((prev) => ({
@@ -36,8 +39,19 @@ export function Questionnaire() {
     return Object.keys(answers).length > 0
   }
 
-  if (showResults) {
-    return <Results answers={answers} />
+  if (currentSection === "anamnesis") {
+    return (
+      <Anamnesis
+        onComplete={(data) => {
+          setAnamnesisData(data)
+          setCurrentSection("questionnaire")
+        }}
+      />
+    )
+  }
+
+  if (currentSection === "results") {
+    return <Results answers={answers} anamnesisData={anamnesisData} />
   }
 
   return (
@@ -51,7 +65,7 @@ export function Questionnaire() {
       </div>
 
       <Tabs value={currentTab} onValueChange={setCurrentTab}>
-        <TabsList className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 h-auto">
+        <TabsList className="grid grid-cols-3 grid-rows-5 h-auto gap-1">
           {Object.keys(factorNames).map((factor) => (
             <TabsTrigger key={factor} value={factor} className="text-xs md:text-sm py-2">
               {factorNames[factor]}
@@ -161,7 +175,7 @@ export function Questionnaire() {
         </Button>
 
         {currentTab === "special-behaviors" ? (
-          <Button onClick={() => setShowResults(true)} disabled={!isComplete()}>
+          <Button onClick={() => setCurrentSection("results")} disabled={!isComplete()}>
             Ver Resultados
           </Button>
         ) : (
@@ -179,6 +193,10 @@ export function Questionnaire() {
             Siguiente
           </Button>
         )}
+
+        <Button variant="outline" onClick={() => setCurrentSection("anamnesis")}>
+          Volver a Anamnesis
+        </Button>
       </div>
     </div>
   )

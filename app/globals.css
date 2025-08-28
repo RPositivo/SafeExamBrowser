@@ -9,7 +9,7 @@
     --primary-foreground: 0 0% 100%; /* #ffffff */
 
     --secondary: 43 98% 50%; /* #fdc001 */
-    --secondary-foreground: 0 0% 100%; /* #ffffff */
+    --secondary-foreground: 0 0% 0%; /* #000000 */
 
     --accent: 0 0% 100%; /* #ffffff */
     --accent-foreground: 277 100% 15%; /* #32004f */
@@ -57,7 +57,7 @@
     --primary-foreground: 0 0% 100%; /* #ffffff */
 
     --secondary: 43 98% 50%; /* #fdc001 */
-    --secondary-foreground: 0 0% 100%; /* #ffffff */
+    --secondary-foreground: 0 0% 0%; /* #000000 */
 
     --muted: 277 30% 30%;
     --muted-foreground: 0 0% 80%;
@@ -91,6 +91,11 @@
 
   .btn-secondary {
     @apply bg-secondary text-secondary-foreground hover:bg-secondary/90;
+  }
+
+  /* Estilos específicos para mejorar contraste */
+  .tabs-trigger-active {
+    @apply bg-secondary text-black;
   }
 
   /* Estilos para los tooltips de los gráficos */

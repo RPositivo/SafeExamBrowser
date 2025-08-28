@@ -10,12 +10,14 @@ import { sendEmail } from "@/lib/send-email"
 import { Loader2 } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { CheckCircle, AlertCircle, Info } from "lucide-react"
+import { storeQuestionnaire } from "@/lib/store-data"
 
 interface EmailFormProps {
   answers: Record<string, number>
+  anamnesisData?: any
 }
 
-export function EmailForm({ answers }: EmailFormProps) {
+export function EmailForm({ answers, anamnesisData }: EmailFormProps) {
   const [dogName, setDogName] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null)
@@ -30,22 +32,30 @@ export function EmailForm({ answers }: EmailFormProps) {
     setResult(null)
 
     try {
-      console.log("Enviando formulario con datos:", {
-        email: fixedEmail,
-        dogName,
-        answersCount: Object.keys(answers).length,
+      // Primero almacenar los datos
+      const storeResult = await storeQuestionnaire({
+        anamnesisData,
+        cbarqAnswers: answers,
+        factorScores: {}, // Se calculará en send-email
+        specialBehaviorScores: [], // Se calculará en send-email
       })
 
+      console.log("Datos almacenados:", storeResult)
+
+      // Luego enviar el email
       const response = await sendEmail({
         email: fixedEmail,
-        dogName: dogName || "Mi Perro",
+        dogName: anamnesisData?.petName || dogName || "Mi Perro",
         answers,
+        anamnesisData: {
+          ...anamnesisData,
+          storageId: storeResult.success ? storeResult.id : undefined,
+        },
       })
 
       console.log("Respuesta recibida:", response)
       setResult(response)
 
-      // Si el error está relacionado con la API key, mostrar información adicional
       if (!response.success && response.message.includes("API key")) {
         setShowApiKeyInfo(true)
       }
@@ -53,12 +63,14 @@ export function EmailForm({ answers }: EmailFormProps) {
       console.error("Error en el formulario:", error)
       setResult({
         success: false,
-        message: `Error al enviar el correo: ${error instanceof Error ? error.message : "Error desconocido"}`,
+        message: `Error al procesar: ${error instanceof Error ? error.message : "Error desconocido"}`,
       })
     } finally {
       setIsLoading(false)
     }
   }
+
+  const displayName = anamnesisData?.petName || dogName || "Mi Perro"
 
   return (
     <div className="space-y-4">

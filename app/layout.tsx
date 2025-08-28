@@ -13,7 +13,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Cuestionario de Evaluación Conductual Canina (C-BARQ)",
   description: "Evalúe el comportamiento de su perro con el cuestionario C-BARQ",
-    generator: 'v0.dev'
+    generator: 'v0.app'
 }
 
 export default function RootLayout({

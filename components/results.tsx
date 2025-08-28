@@ -8,14 +8,21 @@ import { SpecialBehaviorsChart } from "@/components/special-behaviors-chart"
 import { NOT_OBSERVED } from "@/components/questionnaire"
 import { EmailForm } from "@/components/email-form"
 import { useState, useEffect } from "react"
+import { Loader2 } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { CheckCircle, AlertCircle } from "lucide-react"
+import { storeQuestionnaire } from "@/lib/store-data"
 
 interface ResultsProps {
   answers: Record<string, number>
+  anamnesisData?: any
 }
 
-export function Results({ answers }: ResultsProps) {
+export function Results({ answers, anamnesisData }: ResultsProps) {
   const [showEmailForm, setShowEmailForm] = useState(false)
   const [isClient, setIsClient] = useState(false)
+  const [isStoring, setIsStoring] = useState(false)
+  const [storeResult, setStoreResult] = useState<{ success: boolean; message: string; id?: string } | null>(null)
 
   // Usar useEffect para asegurarse de que el componente solo se renderice en el cliente
   useEffect(() => {
@@ -119,8 +126,80 @@ export function Results({ answers }: ResultsProps) {
     window.print()
   }
 
+  const handleStoreData = async () => {
+    setIsStoring(true)
+    setStoreResult(null)
+
+    try {
+      const result = await storeQuestionnaire({
+        anamnesisData,
+        cbarqAnswers: answers,
+        factorScores: factorScoresWithMetadata,
+        specialBehaviorScores: getSpecialBehaviorScores(),
+      })
+
+      setStoreResult(result)
+    } catch (error) {
+      setStoreResult({
+        success: false,
+        message: `Error al almacenar: ${error instanceof Error ? error.message : "Error desconocido"}`,
+      })
+    } finally {
+      setIsStoring(false)
+    }
+  }
+
   return (
     <div className="space-y-8">
+      {anamnesisData && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Datos de Anamnesis</CardTitle>
+            <CardDescription>Información general recopilada durante la evaluación inicial</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <h4 className="font-medium mb-2">Información del Animal</h4>
+                <p>
+                  <strong>Nombre:</strong> {anamnesisData.petName}
+                </p>
+                <p>
+                  <strong>Especie:</strong> {anamnesisData.species}
+                </p>
+                <p>
+                  <strong>Raza:</strong> {anamnesisData.breed}
+                </p>
+                <p>
+                  <strong>Edad:</strong> {anamnesisData.age}
+                </p>
+                <p>
+                  <strong>Sexo:</strong> {anamnesisData.sex}
+                </p>
+              </div>
+              <div>
+                <h4 className="font-medium mb-2">Problema Principal</h4>
+                <p>
+                  <strong>Duración:</strong> {anamnesisData.problemDuration}
+                </p>
+                <p>
+                  <strong>Severidad:</strong> {anamnesisData.problemSeverity}
+                </p>
+                <p>
+                  <strong>Funcionamiento:</strong> {anamnesisData.overallFunctioning}
+                </p>
+              </div>
+            </div>
+            {anamnesisData.mainProblem && (
+              <div className="mt-4">
+                <h4 className="font-medium mb-2">Descripción del Problema</h4>
+                <p className="text-sm bg-primary/10 p-3 rounded">{anamnesisData.mainProblem}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>Resultados de la Evaluación C-BARQ</CardTitle>
@@ -257,10 +336,25 @@ export function Results({ answers }: ResultsProps) {
             <CardDescription>Los resultados se enviarán automáticamente a contacto@r-positivo.com</CardDescription>
           </CardHeader>
           <CardContent>
-            <EmailForm answers={answers} />
+            <EmailForm answers={answers} anamnesisData={anamnesisData} />
           </CardContent>
         </Card>
       ) : null}
+
+      {storeResult && (
+        <Alert variant={storeResult.success ? "default" : "destructive"} className="mt-4">
+          {storeResult.success ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+          <AlertTitle>{storeResult.success ? "Éxito" : "Error"}</AlertTitle>
+          <AlertDescription>
+            {storeResult.message}
+            {storeResult.success && storeResult.id && (
+              <p className="mt-2 text-sm">
+                ID del cuestionario: <code className="bg-primary/20 px-1 rounded">{storeResult.id}</code>
+              </p>
+            )}
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="flex flex-col sm:flex-row justify-center gap-4">
         <Button onClick={handlePrint} variant="secondary">
@@ -268,6 +362,16 @@ export function Results({ answers }: ResultsProps) {
         </Button>
         <Button onClick={() => setShowEmailForm(!showEmailForm)}>
           {showEmailForm ? "Ocultar Formulario" : "Enviar Resultados por Correo"}
+        </Button>
+        <Button onClick={handleStoreData} disabled={isStoring} variant="outline">
+          {isStoring ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Almacenando...
+            </>
+          ) : (
+            "Almacenar Datos"
+          )}
         </Button>
       </div>
     </div>

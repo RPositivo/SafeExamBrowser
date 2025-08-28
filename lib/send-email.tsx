@@ -17,6 +17,7 @@ interface EmailData {
   email: string
   dogName: string
   answers: Record<string, number>
+  anamnesisData?: any
 }
 
 export async function sendEmail(data: EmailData) {
@@ -30,7 +31,7 @@ export async function sendEmail(data: EmailData) {
       }
     }
 
-    const { email, dogName, answers } = data
+    const { email, dogName, answers, anamnesisData } = data
 
     // Calcular puntuaciones de factores
     const factorScores = calculateFactorScores(answers)
@@ -42,10 +43,22 @@ export async function sendEmail(data: EmailData) {
     const individualResponses = getIndividualResponses(answers)
 
     // Formatear el contenido del correo en texto plano
-    const plainTextContent = formatPlainTextEmail(dogName, factorScores, specialBehaviorScores, individualResponses)
+    const plainTextContent = formatPlainTextEmail(
+      dogName,
+      factorScores,
+      specialBehaviorScores,
+      individualResponses,
+      anamnesisData,
+    )
 
     // Generar HTML para el correo
-    const htmlContent = generateHtmlEmail(dogName, factorScores, specialBehaviorScores, individualResponses)
+    const htmlContent = generateHtmlEmail(
+      dogName,
+      factorScores,
+      specialBehaviorScores,
+      individualResponses,
+      anamnesisData,
+    )
 
     console.log("Enviando correo a:", email)
     console.log("Nombre del perro:", dogName)
@@ -191,33 +204,38 @@ function getColorForDifference(factor: string, difference: number) {
 
 function formatPlainTextEmail(
   dogName: string,
-  factorScores: Record<
-    string,
-    {
-      score: number
-      insufficientData: boolean
-      average: number
-      difference: number
-      name: string
-    }
-  >,
-  specialBehaviorScores: Array<{
-    id: string
-    text: string
-    score: number | null
-    notObserved: boolean
-  }>,
-  individualResponses: Record<string, { question: string; answer: number | string; factor: string }>,
+  factorScores: Record<string, any>,
+  specialBehaviorScores: Array<any>,
+  individualResponses: Record<string, any>,
+  anamnesisData?: any,
 ) {
   let content = `
 RESULTADOS DEL CUESTIONARIO C-BARQ PARA ${dogName.toUpperCase()}
 =====================================================
+`
 
+  // Agregar datos de anamnesis si están disponibles
+  if (anamnesisData) {
+    content += `
+DATOS DE ANAMNESIS
+-----------------
+Animal: ${anamnesisData.petName || "N/A"} - ${anamnesisData.species || "N/A"} - ${anamnesisData.breed || "N/A"}
+Edad: ${anamnesisData.age || "N/A"} - Sexo: ${anamnesisData.sex || "N/A"}
+Propietario: ${anamnesisData.ownerName || "N/A"}
+
+Problema Principal: ${anamnesisData.mainProblem || "N/A"}
+Duración: ${anamnesisData.problemDuration || "N/A"}
+Severidad: ${anamnesisData.problemSeverity || "N/A"}
+Funcionamiento General: ${anamnesisData.overallFunctioning || "N/A"}
+`
+  }
+
+  // Puntuaciones por factor
+  content += `
 PUNTUACIONES POR FACTOR
 ----------------------
 `
 
-  // Añadir puntuaciones de factores
   Object.values(factorScores).forEach((factor) => {
     if (factor.insufficientData) {
       content += `\n${factor.name}: Datos insuficientes (Promedio población: ${factor.average.toFixed(2)})`
@@ -227,7 +245,7 @@ PUNTUACIONES POR FACTOR
     }
   })
 
-  // Añadir conductas especiales
+  // Conductas especiales
   content += `
 
 CONDUCTAS ESPECIALES
@@ -244,7 +262,7 @@ CONDUCTAS ESPECIALES
     }
   })
 
-  // Añadir respuestas individuales
+  // Respuestas individuales
   content += `
 
 RESPUESTAS INDIVIDUALES
@@ -271,7 +289,7 @@ RESPUESTAS INDIVIDUALES
     })
   })
 
-  // Añadir interpretación
+  // Interpretación de resultados
   content += `
 
 INTERPRETACIÓN DE RESULTADOS
@@ -293,23 +311,10 @@ La mayoría de los problemas de comportamiento en perros pueden tratarse con éx
 
 function generateHtmlEmail(
   dogName: string,
-  factorScores: Record<
-    string,
-    {
-      score: number
-      insufficientData: boolean
-      average: number
-      difference: number
-      name: string
-    }
-  >,
-  specialBehaviorScores: Array<{
-    id: string
-    text: string
-    score: number | null
-    notObserved: boolean
-  }>,
-  individualResponses: Record<string, { question: string; answer: number | string; factor: string }>,
+  factorScores: Record<string, any>,
+  specialBehaviorScores: Array<any>,
+  individualResponses: Record<string, any>,
+  anamnesisData?: any,
 ) {
   // Crear representación visual de barras para los factores
   const factorBars = Object.entries(factorScores)
@@ -337,6 +342,8 @@ function generateHtmlEmail(
       const barWidth = (data.score / 4) * 100
       const barColor = getColorForDifference(factor, data.difference)
       const differenceText = data.difference >= 0 ? `+${data.difference.toFixed(2)}` : data.difference.toFixed(2)
+      // Determinar el color del texto basado en el color de fondo
+      const textColor = barColor === "#FFD700" ? "#000000" : "#FFFFFF"
 
       return `
         <div style="margin-bottom: 15px;">
@@ -345,10 +352,10 @@ function generateHtmlEmail(
             <span style="color: ${barColor};">${data.score.toFixed(2)} (${differenceText})</span>
           </div>
           <div style="height: 20px; background-color: #f0f0f0; border-radius: 4px; position: relative;">
-            <div style="height: 20px; width: ${barWidth}%; background-color: ${barColor}; border-radius: 4px 0 0 4px;"></div>
-            <div style="position: absolute; height: 20px; width: 2px; background-color: #fdc001; left: ${
-              (data.average / 4) * 100
-            }%; top: 0;"></div>
+            <div style="height: 20px; width: ${barWidth}%; background-color: ${barColor}; border-radius: 4px 0 0 4px; display: flex; align-items: center; justify-content: center;">
+              <span style="color: ${textColor}; font-size: 12px; font-weight: bold;">${data.score.toFixed(1)}</span>
+            </div>
+            <div style="position: absolute; height: 20px; width: 2px; background-color: #fdc001; left: ${(data.average / 4) * 100}%; top: 0;"></div>
           </div>
           <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666; margin-top: 2px;">
             <span>0</span>
@@ -397,6 +404,8 @@ function generateHtmlEmail(
       const barWidth = (behavior.score / 4) * 100
       const barColor =
         behavior.score <= 1 ? "#4CAF50" : behavior.score <= 2 ? "#FFD700" : behavior.score <= 3 ? "#FFA500" : "#FF0000"
+      // Determinar el color del texto basado en el color de fondo
+      const textColor = barColor === "#FFD700" ? "#000000" : "#FFFFFF"
 
       return `
         <div style="margin-bottom: 15px;">
@@ -405,7 +414,9 @@ function generateHtmlEmail(
             <span style="color: ${barColor};">${behavior.score}</span>
           </div>
           <div style="height: 20px; background-color: #f0f0f0; border-radius: 4px;">
-            <div style="height: 20px; width: ${barWidth}%; background-color: ${barColor}; border-radius: 4px 0 0 4px;"></div>
+            <div style="height: 20px; width: ${barWidth}%; background-color: ${barColor}; border-radius: 4px 0 0 4px; display: flex; align-items: center; justify-content: center;">
+              <span style="color: ${textColor}; font-size: 12px; font-weight: bold;">${behavior.score}</span>
+            </div>
           </div>
           <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666; margin-top: 2px;">
             <span>0</span>
@@ -468,7 +479,7 @@ function generateHtmlEmail(
     })
     .join("")
 
-  return `
+  let htmlContent = `
     <html>
       <head>
         <meta charset="UTF-8">
@@ -552,4 +563,26 @@ function generateHtmlEmail(
       </body>
     </html>
   `
+
+  // Agregar datos de anamnesis si están disponibles
+  if (anamnesisData) {
+    htmlContent = `
+      <div style="margin-bottom: 30px;">
+        <h2 style="border-bottom: 2px solid #32004f; padding-bottom: 10px; color: #32004f;">
+          Datos de Anamnesis
+        </h2>
+        <p>
+          Animal: ${anamnesisData.petName || "N/A"} - ${anamnesisData.species || "N/A"} - ${anamnesisData.breed || "N/A"}<br>
+          Edad: ${anamnesisData.age || "N/A"} - Sexo: ${anamnesisData.sex || "N/A"}<br>
+          Propietario: ${anamnesisData.ownerName || "N/A"}<br>
+          Problema Principal: ${anamnesisData.mainProblem || "N/A"}<br>
+          Duración: ${anamnesisData.problemDuration || "N/A"}<br>
+          Severidad: ${anamnesisData.problemSeverity || "N/A"}<br>
+          Funcionamiento General: ${anamnesisData.overallFunctioning || "N/A"}
+        </p>
+      </div>
+      ${htmlContent}`
+  }
+
+  return htmlContent
 }
