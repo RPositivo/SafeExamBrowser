@@ -132,14 +132,12 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
       "breed",
       "age",
       "sex",
-      "neutered",
-      "ownerName",
-      "ownerEmail",
+      "tutorName",
+      "tutorEmail",
       "mainProblem",
       "problemDuration",
-      "behaviorDescription",
       "medicalHistory",
-      "livingEnvironment",
+      "physicalEnvironment",
       "overallFunctioning",
     ]
 
@@ -155,8 +153,16 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
   }
 
   const handleComplete = () => {
+    console.log("Intentando completar anamnesis...")
+    console.log("Progreso actual:", calculateProgress())
+    console.log("Datos del formulario:", formData)
+    console.log("¿Está completo?", isComplete())
+
     if (isComplete()) {
+      console.log("Completando anamnesis con datos:", formData)
       onComplete(formData as AnamnesisData)
+    } else {
+      console.log("Formulario no está completo. Faltan campos requeridos.")
     }
   }
 
