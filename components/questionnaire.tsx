@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -21,6 +21,42 @@ export function Questionnaire() {
   const [currentSection, setCurrentSection] = useState<"anamnesis" | "questionnaire" | "results">("anamnesis")
   const [anamnesisData, setAnamnesisData] = useState<any>(null)
 
+  // Cargar datos del localStorage al inicializar
+  useEffect(() => {
+    const savedAnswers = localStorage.getItem("cbarq-answers")
+    const savedAnamnesis = localStorage.getItem("cbarq-anamnesis")
+    const savedResults = localStorage.getItem("cbarq-results")
+
+    if (savedAnswers) {
+      setAnswers(JSON.parse(savedAnswers))
+    }
+
+    if (savedAnamnesis) {
+      setAnamnesisData(JSON.parse(savedAnamnesis))
+    }
+
+    // Si hay resultados guardados, ir directamente a resultados
+    if (savedResults && savedAnswers && savedAnamnesis) {
+      setCurrentSection("results")
+    } else if (savedAnamnesis) {
+      setCurrentSection("questionnaire")
+    }
+  }, [])
+
+  // Guardar respuestas en localStorage cuando cambien
+  useEffect(() => {
+    if (Object.keys(answers).length > 0) {
+      localStorage.setItem("cbarq-answers", JSON.stringify(answers))
+    }
+  }, [answers])
+
+  // Guardar datos de anamnesis en localStorage cuando cambien
+  useEffect(() => {
+    if (anamnesisData) {
+      localStorage.setItem("cbarq-anamnesis", JSON.stringify(anamnesisData))
+    }
+  }, [anamnesisData])
+
   const handleAnswerChange = (questionId: string, value: number) => {
     setAnswers((prev) => ({
       ...prev,
@@ -39,6 +75,20 @@ export function Questionnaire() {
     return Object.keys(answers).length > 0
   }
 
+  const handleRestart = () => {
+    // Limpiar todos los estados
+    setAnswers({})
+    setAnamnesisData(null)
+    setCurrentTab("stranger-directed-aggression")
+    setCurrentSection("anamnesis")
+    setShowResults(false)
+
+    // Limpiar localStorage
+    localStorage.removeItem("cbarq-answers")
+    localStorage.removeItem("cbarq-anamnesis")
+    localStorage.removeItem("cbarq-results")
+  }
+
   if (currentSection === "anamnesis") {
     return (
       <Anamnesis
@@ -51,7 +101,7 @@ export function Questionnaire() {
   }
 
   if (currentSection === "results") {
-    return <Results answers={answers} anamnesisData={anamnesisData} />
+    return <Results answers={answers} anamnesisData={anamnesisData} onRestart={handleRestart} />
   }
 
   return (

@@ -9,7 +9,6 @@ interface FactorChartProps {
 }
 
 export function FactorChart({ factorScores, factorMetadata }: FactorChartProps) {
-  // Añadir console.log para depuración
   console.log("FactorChart - factorScores:", factorScores)
   console.log("FactorChart - factorMetadata:", factorMetadata)
 
@@ -25,11 +24,10 @@ export function FactorChart({ factorScores, factorMetadata }: FactorChartProps) 
       average,
       difference,
       insufficientData,
-      fill: insufficientData ? "#9CA3AF" : getColorForDifference(factor, difference), // Gris para datos insuficientes
+      fill: insufficientData ? "#9CA3AF" : getColorForDifference(factor, difference),
     }
   })
 
-  // Añadir console.log para depuración
   console.log("FactorChart - data:", data)
 
   function getColorForDifference(factor: string, difference: number) {
@@ -56,6 +54,14 @@ export function FactorChart({ factorScores, factorMetadata }: FactorChartProps) 
         return "#4CAF50" // Verde
       }
     }
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="w-full h-[600px] flex items-center justify-center bg-primary/20 rounded-lg">
+        <p className="text-lg text-muted-foreground">No hay datos para mostrar</p>
+      </div>
+    )
   }
 
   return (

@@ -14,7 +14,6 @@ interface SpecialBehaviorsChartProps {
 }
 
 export function SpecialBehaviorsChart({ behaviors }: SpecialBehaviorsChartProps) {
-  // Añadir console.log para depuración
   console.log("SpecialBehaviorsChart - behaviors:", behaviors)
 
   const data = behaviors.map((behavior) => ({
@@ -25,7 +24,6 @@ export function SpecialBehaviorsChart({ behaviors }: SpecialBehaviorsChartProps)
     fill: behavior.notObserved ? "#9CA3AF" : getColorForScore(behavior.score || 0),
   }))
 
-  // Añadir console.log para depuración
   console.log("SpecialBehaviorsChart - data:", data)
 
   function getColorForScore(score: number) {
@@ -33,6 +31,14 @@ export function SpecialBehaviorsChart({ behaviors }: SpecialBehaviorsChartProps)
     if (score <= 2) return "#FFD700" // Amarillo
     if (score <= 3) return "#FFA500" // Naranja
     return "#FF0000" // Rojo
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="w-full h-[600px] flex items-center justify-center bg-primary/20 rounded-lg">
+        <p className="text-lg text-muted-foreground">No hay datos para mostrar</p>
+      </div>
+    )
   }
 
   return (

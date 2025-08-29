@@ -8,7 +8,7 @@ import { SpecialBehaviorsChart } from "@/components/special-behaviors-chart"
 import { NOT_OBSERVED } from "@/components/questionnaire"
 import { EmailForm } from "@/components/email-form"
 import { useState, useEffect } from "react"
-import { Loader2 } from "lucide-react"
+import { Loader2, RotateCcw } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { CheckCircle, AlertCircle } from "lucide-react"
 import { storeQuestionnaire } from "@/lib/store-data"
@@ -16,9 +16,10 @@ import { storeQuestionnaire } from "@/lib/store-data"
 interface ResultsProps {
   answers: Record<string, number>
   anamnesisData?: any
+  onRestart?: () => void
 }
 
-export function Results({ answers, anamnesisData }: ResultsProps) {
+export function Results({ answers, anamnesisData, onRestart }: ResultsProps) {
   const [showEmailForm, setShowEmailForm] = useState(false)
   const [isClient, setIsClient] = useState(false)
   const [isStoring, setIsStoring] = useState(false)
@@ -27,7 +28,15 @@ export function Results({ answers, anamnesisData }: ResultsProps) {
   // Usar useEffect para asegurarse de que el componente solo se renderice en el cliente
   useEffect(() => {
     setIsClient(true)
-  }, [])
+
+    // Guardar resultados en localStorage
+    const resultsData = {
+      answers,
+      anamnesisData,
+      timestamp: new Date().toISOString(),
+    }
+    localStorage.setItem("cbarq-results", JSON.stringify(resultsData))
+  }, [answers, anamnesisData])
 
   const calculateFactorScores = () => {
     const scores: Record<string, { score: number; count: number; notObservedCount: number; totalQuestions: number }> =
@@ -72,10 +81,6 @@ export function Results({ answers, anamnesisData }: ResultsProps) {
     {} as Record<string, number>,
   )
 
-  // Añadir console.log para depuración
-  console.log("Results - factorScores:", factorScores)
-  console.log("Results - factorScoresWithMetadata:", factorScoresWithMetadata)
-
   const getSpecialBehaviorScores = () => {
     return specialBehaviors.map((behavior) => ({
       id: behavior.id,
@@ -84,9 +89,6 @@ export function Results({ answers, anamnesisData }: ResultsProps) {
       notObserved: answers[behavior.id] === NOT_OBSERVED,
     }))
   }
-
-  // Añadir console.log para depuración
-  console.log("Results - specialBehaviors:", getSpecialBehaviorScores())
 
   const getColorClass = (factor: string, score: number) => {
     // Si hay datos insuficientes, devolver clase de texto gris
@@ -149,6 +151,18 @@ export function Results({ answers, anamnesisData }: ResultsProps) {
     }
   }
 
+  const handleRestart = () => {
+    // Limpiar localStorage
+    localStorage.removeItem("cbarq-results")
+    localStorage.removeItem("cbarq-anamnesis")
+    localStorage.removeItem("cbarq-answers")
+
+    // Llamar a la función de reinicio si está disponible
+    if (onRestart) {
+      onRestart()
+    }
+  }
+
   return (
     <div className="space-y-8">
       {anamnesisData && (
@@ -163,9 +177,6 @@ export function Results({ answers, anamnesisData }: ResultsProps) {
                 <h4 className="font-medium mb-2">Información del Perro</h4>
                 <p>
                   <strong>Nombre:</strong> {anamnesisData.petName}
-                </p>
-                <p>
-                  <strong>Especie:</strong> {anamnesisData.species}
                 </p>
                 <p>
                   <strong>Raza:</strong> {anamnesisData.breed}
@@ -210,7 +221,9 @@ export function Results({ answers, anamnesisData }: ResultsProps) {
         </CardHeader>
         <CardContent>
           {isClient && Object.keys(factorScores).length > 0 ? (
-            <FactorChart factorScores={factorScores} factorMetadata={factorScoresWithMetadata} />
+            <div className="w-full">
+              <FactorChart factorScores={factorScores} factorMetadata={factorScoresWithMetadata} />
+            </div>
           ) : (
             <div className="w-full h-[600px] flex items-center justify-center bg-primary/20 rounded-lg">
               <p className="text-lg text-muted-foreground">Cargando gráfica de factores...</p>
@@ -292,10 +305,10 @@ export function Results({ answers, anamnesisData }: ResultsProps) {
                 <h4 className="font-medium">Capacidad de entrenamiento:</h4>
                 <p>
                   Las barras rojas/naranjas para la capacidad de entrenamiento pueden o no ser motivo de preocupación
-                  para un propietario en particular. Los factores que pueden ayudar a determinar si se debe tomar
-                  medidas incluyen el tamaño y la fuerza del perro, dónde vive y el nivel de obediencia que espera de su
-                  perro. Si vive cerca de una calle concurrida, por ejemplo, un perro que no acude cuando se le llama
-                  puede ser una preocupación significativa.
+                  para un tutor en particular. Los factores que pueden ayudar a determinar si se debe tomar medidas
+                  incluyen el tamaño y la fuerza del perro, dónde vive y el nivel de obediencia que espera de su perro.
+                  Si vive cerca de una calle concurrida, por ejemplo, un perro que no acude cuando se le llama puede ser
+                  una preocupación significativa.
                 </p>
               </div>
 
@@ -320,7 +333,9 @@ export function Results({ answers, anamnesisData }: ResultsProps) {
         </CardHeader>
         <CardContent>
           {isClient ? (
-            <SpecialBehaviorsChart behaviors={getSpecialBehaviorScores()} />
+            <div className="w-full">
+              <SpecialBehaviorsChart behaviors={getSpecialBehaviorScores()} />
+            </div>
           ) : (
             <div className="w-full h-[600px] flex items-center justify-center bg-primary/20 rounded-lg">
               <p className="text-lg text-muted-foreground">Cargando gráfica de conductas especiales...</p>
@@ -372,6 +387,10 @@ export function Results({ answers, anamnesisData }: ResultsProps) {
           ) : (
             "Almacenar Datos del Perro"
           )}
+        </Button>
+        <Button onClick={handleRestart} variant="destructive">
+          <RotateCcw className="mr-2 h-4 w-4" />
+          Empezar Nuevamente
         </Button>
       </div>
     </div>
