@@ -214,19 +214,68 @@ RESULTADOS DEL CUESTIONARIO C-BARQ PARA ${dogName.toUpperCase()}
 =====================================================
 `
 
-  // Agregar datos de anamnesis si están disponibles
+  // Agregar datos completos de anamnesis si están disponibles
   if (anamnesisData) {
     content += `
-DATOS DE ANAMNESIS
------------------
-Animal: ${anamnesisData.petName || "N/A"} - ${anamnesisData.species || "N/A"} - ${anamnesisData.breed || "N/A"}
-Edad: ${anamnesisData.age || "N/A"} - Sexo: ${anamnesisData.sex || "N/A"}
-Propietario: ${anamnesisData.ownerName || "N/A"}
+INFORMACIÓN COMPLETA DE ANAMNESIS
+================================
 
-Problema Principal: ${anamnesisData.mainProblem || "N/A"}
-Duración: ${anamnesisData.problemDuration || "N/A"}
-Severidad: ${anamnesisData.problemSeverity || "N/A"}
-Funcionamiento General: ${anamnesisData.overallFunctioning || "N/A"}
+INFORMACIÓN DEL PERRO:
+- Nombre: ${anamnesisData.petName || "N/A"}
+- Raza: ${anamnesisData.breed || "N/A"}
+- Edad: ${anamnesisData.age || "N/A"}
+- Sexo: ${anamnesisData.sex || "N/A"}
+- Castrado/Esterilizado: ${anamnesisData.neutered || "N/A"}
+- Peso: ${anamnesisData.weight || "N/A"}
+- Edad de llegada al hogar: ${anamnesisData.acquisitionAge || "N/A"}
+- Origen: ${anamnesisData.acquisitionSource || "N/A"}
+
+INFORMACIÓN DEL TUTOR:
+- Nombre: ${anamnesisData.tutorName || "N/A"}
+- Teléfono: ${anamnesisData.tutorPhone || "N/A"}
+- Email: ${anamnesisData.tutorEmail || "N/A"}
+- Dirección: ${anamnesisData.tutorAddress || "N/A"}
+
+PROBLEMA PRINCIPAL:
+- Descripción: ${anamnesisData.mainProblem || "N/A"}
+- Duración: ${anamnesisData.problemDuration || "N/A"}
+- Frecuencia: ${anamnesisData.problemFrequency || "N/A"}
+- Intensidad: ${anamnesisData.behaviorIntensity || "N/A"}
+- Evolución: ${anamnesisData.behaviorEvolution || "N/A"}
+- Situaciones que lo provocan: ${anamnesisData.problemTriggers || "N/A"}
+- Secuencia del comportamiento: ${anamnesisData.behaviorSequence || "N/A"}
+
+PERSONALIDAD Y TEMPERAMENTO:
+- Rasgos de personalidad: ${anamnesisData.temperamentTraits ? anamnesisData.temperamentTraits.join(", ") : "N/A"}
+- Descripción de personalidad: ${anamnesisData.personalityDescription || "N/A"}
+- Socialización temprana: ${anamnesisData.socialization || "N/A"}
+- Historia de entrenamiento: ${anamnesisData.learningHistory || "N/A"}
+- Capacidades cognitivas: ${anamnesisData.cognitiveAbilities || "N/A"}
+
+INFORMACIÓN DE SALUD:
+- Historia médica: ${anamnesisData.medicalHistory || "N/A"}
+- Medicamentos actuales: ${anamnesisData.currentMedications || "N/A"}
+- Signos neurológicos: ${anamnesisData.neurologicalSigns || "N/A"}
+- Evaluación de dolor: ${anamnesisData.painAssessment || "N/A"}
+- Estado reproductivo: ${anamnesisData.reproductiveStatus || "N/A"}
+- Exámenes veterinarios: ${anamnesisData.veterinaryExams || "N/A"}
+
+AMBIENTE Y RUTINA:
+- Ambiente físico: ${anamnesisData.physicalEnvironment || "N/A"}
+- Ambiente social: ${anamnesisData.socialEnvironment || "N/A"}
+- Rutina diaria: ${anamnesisData.dailyRoutine || "N/A"}
+- Nivel de ejercicio: ${anamnesisData.exerciseEnrichment || "N/A"}
+- Factores estresantes: ${anamnesisData.environmentalStressors ? anamnesisData.environmentalStressors.join(", ") : "N/A"}
+- Prácticas de manejo: ${anamnesisData.managementPractices || "N/A"}
+
+CALIDAD DE VIDA Y FUNCIONAMIENTO:
+- Bienestar del animal: ${anamnesisData.animalWelfare || "N/A"}
+- Función como mascota: ${anamnesisData.petFunction || "N/A"}
+- Impacto social: ${anamnesisData.socialImpact || "N/A"}
+- Funcionamiento general: ${anamnesisData.overallFunctioning || "N/A"}
+- Impacto en la familia: ${anamnesisData.familyImpact || "N/A"}
+- Objetivos de tratamiento: ${anamnesisData.treatmentGoals || "N/A"}
+- Disposición para el tratamiento: ${anamnesisData.prognosisFactors || "N/A"}
 `
   }
 
@@ -479,7 +528,86 @@ function generateHtmlEmail(
     })
     .join("")
 
-  let htmlContent = `
+  // Crear sección completa de anamnesis para HTML
+  let anamnesisHtml = ""
+  if (anamnesisData) {
+    anamnesisHtml = `
+      <div style="margin-bottom: 30px;">
+        <h2 style="border-bottom: 2px solid #32004f; padding-bottom: 10px; color: #32004f;">
+          Información Completa de Anamnesis
+        </h2>
+        
+        <h3 style="color: #32004f; margin-top: 20px; margin-bottom: 10px;">Información del Perro</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+          <tr><td style="padding: 5px; font-weight: bold;">Nombre:</td><td style="padding: 5px;">${anamnesisData.petName || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Raza:</td><td style="padding: 5px;">${anamnesisData.breed || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Edad:</td><td style="padding: 5px;">${anamnesisData.age || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Sexo:</td><td style="padding: 5px;">${anamnesisData.sex || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Castrado/Esterilizado:</td><td style="padding: 5px;">${anamnesisData.neutered || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Peso:</td><td style="padding: 5px;">${anamnesisData.weight || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Edad de llegada al hogar:</td><td style="padding: 5px;">${anamnesisData.acquisitionAge || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Origen:</td><td style="padding: 5px;">${anamnesisData.acquisitionSource || "N/A"}</td></tr>
+        </table>
+
+        <h3 style="color: #32004f; margin-top: 20px; margin-bottom: 10px;">Información del Tutor</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+          <tr><td style="padding: 5px; font-weight: bold;">Nombre:</td><td style="padding: 5px;">${anamnesisData.tutorName || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Teléfono:</td><td style="padding: 5px;">${anamnesisData.tutorPhone || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Email:</td><td style="padding: 5px;">${anamnesisData.tutorEmail || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Dirección:</td><td style="padding: 5px;">${anamnesisData.tutorAddress || "N/A"}</td></tr>
+        </table>
+
+        <h3 style="color: #32004f; margin-top: 20px; margin-bottom: 10px;">Problema Principal</h3>
+        ${anamnesisData.mainProblem ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Descripción:</strong> ${anamnesisData.mainProblem}</p>` : ""}
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+          <tr><td style="padding: 5px; font-weight: bold;">Duración:</td><td style="padding: 5px;">${anamnesisData.problemDuration || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Frecuencia:</td><td style="padding: 5px;">${anamnesisData.problemFrequency || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Intensidad:</td><td style="padding: 5px;">${anamnesisData.behaviorIntensity || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Evolución:</td><td style="padding: 5px;">${anamnesisData.behaviorEvolution || "N/A"}</td></tr>
+        </table>
+        ${anamnesisData.problemTriggers ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Situaciones que lo provocan:</strong> ${anamnesisData.problemTriggers}</p>` : ""}
+        ${anamnesisData.behaviorSequence ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Secuencia del comportamiento:</strong> ${anamnesisData.behaviorSequence}</p>` : ""}
+
+        <h3 style="color: #32004f; margin-top: 20px; margin-bottom: 10px;">Personalidad y Temperamento</h3>
+        ${anamnesisData.temperamentTraits && anamnesisData.temperamentTraits.length > 0 ? `<p><strong>Rasgos de personalidad:</strong> ${anamnesisData.temperamentTraits.join(", ")}</p>` : ""}
+        ${anamnesisData.personalityDescription ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Descripción de personalidad:</strong> ${anamnesisData.personalityDescription}</p>` : ""}
+        ${anamnesisData.socialization ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Socialización temprana:</strong> ${anamnesisData.socialization}</p>` : ""}
+        ${anamnesisData.learningHistory ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Historia de entrenamiento:</strong> ${anamnesisData.learningHistory}</p>` : ""}
+        ${anamnesisData.cognitiveAbilities ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Capacidades cognitivas:</strong> ${anamnesisData.cognitiveAbilities}</p>` : ""}
+
+        <h3 style="color: #32004f; margin-top: 20px; margin-bottom: 10px;">Información de Salud</h3>
+        ${anamnesisData.medicalHistory ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Historia médica:</strong> ${anamnesisData.medicalHistory}</p>` : ""}
+        ${anamnesisData.currentMedications ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Medicamentos actuales:</strong> ${anamnesisData.currentMedications}</p>` : ""}
+        ${anamnesisData.neurologicalSigns ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Signos neurológicos:</strong> ${anamnesisData.neurologicalSigns}</p>` : ""}
+        ${anamnesisData.painAssessment ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Evaluación de dolor:</strong> ${anamnesisData.painAssessment}</p>` : ""}
+        ${anamnesisData.reproductiveStatus ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Estado reproductivo:</strong> ${anamnesisData.reproductiveStatus}</p>` : ""}
+        ${anamnesisData.veterinaryExams ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Exámenes veterinarios:</strong> ${anamnesisData.veterinaryExams}</p>` : ""}
+
+        <h3 style="color: #32004f; margin-top: 20px; margin-bottom: 10px;">Ambiente y Rutina</h3>
+        ${anamnesisData.physicalEnvironment ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Ambiente físico:</strong> ${anamnesisData.physicalEnvironment}</p>` : ""}
+        ${anamnesisData.socialEnvironment ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Ambiente social:</strong> ${anamnesisData.socialEnvironment}</p>` : ""}
+        ${anamnesisData.dailyRoutine ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Rutina diaria:</strong> ${anamnesisData.dailyRoutine}</p>` : ""}
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+          <tr><td style="padding: 5px; font-weight: bold;">Nivel de ejercicio:</td><td style="padding: 5px;">${anamnesisData.exerciseEnrichment || "N/A"}</td></tr>
+        </table>
+        ${anamnesisData.environmentalStressors && anamnesisData.environmentalStressors.length > 0 ? `<p><strong>Factores estresantes:</strong> ${anamnesisData.environmentalStressors.join(", ")}</p>` : ""}
+        ${anamnesisData.managementPractices ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Prácticas de manejo:</strong> ${anamnesisData.managementPractices}</p>` : ""}
+
+        <h3 style="color: #32004f; margin-top: 20px; margin-bottom: 10px;">Calidad de Vida y Funcionamiento</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+          <tr><td style="padding: 5px; font-weight: bold;">Bienestar del animal:</td><td style="padding: 5px;">${anamnesisData.animalWelfare || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Función como mascota:</td><td style="padding: 5px;">${anamnesisData.petFunction || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Impacto social:</td><td style="padding: 5px;">${anamnesisData.socialImpact || "N/A"}</td></tr>
+          <tr><td style="padding: 5px; font-weight: bold;">Funcionamiento general:</td><td style="padding: 5px;">${anamnesisData.overallFunctioning || "N/A"}</td></tr>
+        </table>
+        ${anamnesisData.familyImpact ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Impacto en la familia:</strong> ${anamnesisData.familyImpact}</p>` : ""}
+        ${anamnesisData.treatmentGoals ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Objetivos de tratamiento:</strong> ${anamnesisData.treatmentGoals}</p>` : ""}
+        ${anamnesisData.prognosisFactors ? `<p style="background-color: #f9f9f9; padding: 10px; border-left: 4px solid #32004f; margin-bottom: 10px;"><strong>Disposición para el tratamiento:</strong> ${anamnesisData.prognosisFactors}</p>` : ""}
+      </div>
+    `
+  }
+
+  const htmlContent = `
     <html>
       <head>
         <meta charset="UTF-8">
@@ -493,6 +621,8 @@ function generateHtmlEmail(
         </div>
         
         <div style="padding: 20px;">
+          ${anamnesisHtml}
+          
           <h2 style="border-bottom: 2px solid #32004f; padding-bottom: 10px; color: #32004f;">
             Puntuaciones por Factor
           </h2>
@@ -563,26 +693,6 @@ function generateHtmlEmail(
       </body>
     </html>
   `
-
-  // Agregar datos de anamnesis si están disponibles
-  if (anamnesisData) {
-    htmlContent = `
-      <div style="margin-bottom: 30px;">
-        <h2 style="border-bottom: 2px solid #32004f; padding-bottom: 10px; color: #32004f;">
-          Datos de Anamnesis
-        </h2>
-        <p>
-          Animal: ${anamnesisData.petName || "N/A"} - ${anamnesisData.species || "N/A"} - ${anamnesisData.breed || "N/A"}<br>
-          Edad: ${anamnesisData.age || "N/A"} - Sexo: ${anamnesisData.sex || "N/A"}<br>
-          Propietario: ${anamnesisData.ownerName || "N/A"}<br>
-          Problema Principal: ${anamnesisData.mainProblem || "N/A"}<br>
-          Duración: ${anamnesisData.problemDuration || "N/A"}<br>
-          Severidad: ${anamnesisData.problemSeverity || "N/A"}<br>
-          Funcionamiento General: ${anamnesisData.overallFunctioning || "N/A"}
-        </p>
-      </div>
-      ${htmlContent}`
-  }
 
   return htmlContent
 }

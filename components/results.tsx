@@ -172,45 +172,259 @@ export function Results({ answers, anamnesisData, onRestart }: ResultsProps) {
       {anamnesisData && (
         <Card>
           <CardHeader>
-            <CardTitle>Datos de Anamnesis</CardTitle>
-            <CardDescription>Información general recopilada durante la evaluación inicial</CardDescription>
+            <CardTitle>Información Completa de Anamnesis</CardTitle>
+            <CardDescription>Todos los datos recopilados durante la evaluación inicial</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div className="space-y-6">
+              {/* Información Básica del Perro */}
               <div>
-                <h4 className="font-medium mb-2">Información del Perro</h4>
-                <p>
-                  <strong>Nombre:</strong> {anamnesisData.petName}
-                </p>
-                <p>
-                  <strong>Raza:</strong> {anamnesisData.breed}
-                </p>
-                <p>
-                  <strong>Edad:</strong> {anamnesisData.age}
-                </p>
-                <p>
-                  <strong>Sexo:</strong> {anamnesisData.sex}
-                </p>
+                <h4 className="font-medium mb-3 text-lg border-b pb-1">Información del Perro</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                  <p>
+                    <strong>Nombre:</strong> {anamnesisData.petName || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Raza:</strong> {anamnesisData.breed || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Edad:</strong> {anamnesisData.age || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Sexo:</strong> {anamnesisData.sex || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Castrado/Esterilizado:</strong> {anamnesisData.neutered || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Peso:</strong> {anamnesisData.weight || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Edad de llegada al hogar:</strong> {anamnesisData.acquisitionAge || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Origen:</strong> {anamnesisData.acquisitionSource || "No especificado"}
+                  </p>
+                </div>
               </div>
+
+              {/* Información del Tutor */}
               <div>
-                <h4 className="font-medium mb-2">Problema Principal</h4>
-                <p>
-                  <strong>Duración:</strong> {anamnesisData.problemDuration}
-                </p>
-                <p>
-                  <strong>Severidad:</strong> {anamnesisData.problemSeverity}
-                </p>
-                <p>
-                  <strong>Funcionamiento:</strong> {anamnesisData.overallFunctioning}
-                </p>
+                <h4 className="font-medium mb-3 text-lg border-b pb-1">Información del Tutor</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                  <p>
+                    <strong>Nombre:</strong> {anamnesisData.tutorName || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Teléfono:</strong> {anamnesisData.tutorPhone || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {anamnesisData.tutorEmail || "No especificado"}
+                  </p>
+                  <p>
+                    <strong>Dirección:</strong> {anamnesisData.tutorAddress || "No especificado"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Problema Principal */}
+              <div>
+                <h4 className="font-medium mb-3 text-lg border-b pb-1">Problema Principal</h4>
+                <div className="space-y-2 text-sm">
+                  {anamnesisData.mainProblem && (
+                    <div>
+                      <strong>Descripción del problema:</strong>
+                      <p className="bg-primary/10 p-3 rounded mt-1">{anamnesisData.mainProblem}</p>
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <p>
+                      <strong>Duración:</strong> {anamnesisData.problemDuration || "No especificado"}
+                    </p>
+                    <p>
+                      <strong>Frecuencia:</strong> {anamnesisData.problemFrequency || "No especificado"}
+                    </p>
+                    <p>
+                      <strong>Intensidad:</strong> {anamnesisData.behaviorIntensity || "No especificado"}
+                    </p>
+                    <p>
+                      <strong>Evolución:</strong> {anamnesisData.behaviorEvolution || "No especificado"}
+                    </p>
+                  </div>
+                  {anamnesisData.problemTriggers && (
+                    <div>
+                      <strong>Situaciones que lo provocan:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.problemTriggers}</p>
+                    </div>
+                  )}
+                  {anamnesisData.behaviorSequence && (
+                    <div>
+                      <strong>Secuencia del comportamiento:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.behaviorSequence}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Personalidad */}
+              <div>
+                <h4 className="font-medium mb-3 text-lg border-b pb-1">Personalidad y Temperamento</h4>
+                <div className="space-y-2 text-sm">
+                  {anamnesisData.temperamentTraits && anamnesisData.temperamentTraits.length > 0 && (
+                    <div>
+                      <strong>Rasgos de personalidad:</strong>
+                      <p className="mt-1">{anamnesisData.temperamentTraits.join(", ")}</p>
+                    </div>
+                  )}
+                  {anamnesisData.personalityDescription && (
+                    <div>
+                      <strong>Descripción de personalidad:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.personalityDescription}</p>
+                    </div>
+                  )}
+                  {anamnesisData.socialization && (
+                    <div>
+                      <strong>Socialización temprana:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.socialization}</p>
+                    </div>
+                  )}
+                  {anamnesisData.learningHistory && (
+                    <div>
+                      <strong>Historia de entrenamiento:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.learningHistory}</p>
+                    </div>
+                  )}
+                  {anamnesisData.cognitiveAbilities && (
+                    <div>
+                      <strong>Capacidades cognitivas:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.cognitiveAbilities}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Salud */}
+              <div>
+                <h4 className="font-medium mb-3 text-lg border-b pb-1">Información de Salud</h4>
+                <div className="space-y-2 text-sm">
+                  {anamnesisData.medicalHistory && (
+                    <div>
+                      <strong>Historia médica:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.medicalHistory}</p>
+                    </div>
+                  )}
+                  {anamnesisData.currentMedications && (
+                    <div>
+                      <strong>Medicamentos actuales:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.currentMedications}</p>
+                    </div>
+                  )}
+                  {anamnesisData.neurologicalSigns && (
+                    <div>
+                      <strong>Signos neurológicos:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.neurologicalSigns}</p>
+                    </div>
+                  )}
+                  {anamnesisData.painAssessment && (
+                    <div>
+                      <strong>Evaluación de dolor:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.painAssessment}</p>
+                    </div>
+                  )}
+                  {anamnesisData.reproductiveStatus && (
+                    <div>
+                      <strong>Estado reproductivo:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.reproductiveStatus}</p>
+                    </div>
+                  )}
+                  {anamnesisData.veterinaryExams && (
+                    <div>
+                      <strong>Exámenes veterinarios:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.veterinaryExams}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Ambiente y Rutina */}
+              <div>
+                <h4 className="font-medium mb-3 text-lg border-b pb-1">Ambiente y Rutina</h4>
+                <div className="space-y-2 text-sm">
+                  {anamnesisData.physicalEnvironment && (
+                    <div>
+                      <strong>Ambiente físico:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.physicalEnvironment}</p>
+                    </div>
+                  )}
+                  {anamnesisData.socialEnvironment && (
+                    <div>
+                      <strong>Ambiente social:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.socialEnvironment}</p>
+                    </div>
+                  )}
+                  {anamnesisData.dailyRoutine && (
+                    <div>
+                      <strong>Rutina diaria:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.dailyRoutine}</p>
+                    </div>
+                  )}
+                  <p>
+                    <strong>Nivel de ejercicio:</strong> {anamnesisData.exerciseEnrichment || "No especificado"}
+                  </p>
+                  {anamnesisData.environmentalStressors && anamnesisData.environmentalStressors.length > 0 && (
+                    <div>
+                      <strong>Factores estresantes:</strong>
+                      <p className="mt-1">{anamnesisData.environmentalStressors.join(", ")}</p>
+                    </div>
+                  )}
+                  {anamnesisData.managementPractices && (
+                    <div>
+                      <strong>Prácticas de manejo:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.managementPractices}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Calidad de Vida */}
+              <div>
+                <h4 className="font-medium mb-3 text-lg border-b pb-1">Calidad de Vida y Funcionamiento</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <p>
+                      <strong>Bienestar del animal:</strong> {anamnesisData.animalWelfare || "No especificado"}
+                    </p>
+                    <p>
+                      <strong>Función como mascota:</strong> {anamnesisData.petFunction || "No especificado"}
+                    </p>
+                    <p>
+                      <strong>Impacto social:</strong> {anamnesisData.socialImpact || "No especificado"}
+                    </p>
+                    <p>
+                      <strong>Funcionamiento general:</strong> {anamnesisData.overallFunctioning || "No especificado"}
+                    </p>
+                  </div>
+                  {anamnesisData.familyImpact && (
+                    <div>
+                      <strong>Impacto en la familia:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.familyImpact}</p>
+                    </div>
+                  )}
+                  {anamnesisData.treatmentGoals && (
+                    <div>
+                      <strong>Objetivos de tratamiento:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.treatmentGoals}</p>
+                    </div>
+                  )}
+                  {anamnesisData.prognosisFactors && (
+                    <div>
+                      <strong>Disposición para el tratamiento:</strong>
+                      <p className="bg-primary/10 p-2 rounded mt-1">{anamnesisData.prognosisFactors}</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            {anamnesisData.mainProblem && (
-              <div className="mt-4">
-                <h4 className="font-medium mb-2">Descripción del Problema</h4>
-                <p className="text-sm bg-primary/10 p-3 rounded">{anamnesisData.mainProblem}</p>
-              </div>
-            )}
           </CardContent>
         </Card>
       )}
