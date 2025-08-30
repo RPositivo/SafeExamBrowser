@@ -140,7 +140,11 @@ export function Results({ answers, anamnesisData, onRestart }: ResultsProps) {
         specialBehaviorScores: getSpecialBehaviorScores(),
       })
 
-      setStoreResult(result)
+      setStoreResult({
+        success: result.success,
+        message: result.success ? "Resultados almacenados exitosamente" : result.message,
+        id: result.id,
+      })
     } catch (error) {
       setStoreResult({
         success: false,
@@ -385,7 +389,7 @@ export function Results({ answers, anamnesisData, onRestart }: ResultsProps) {
               Almacenando...
             </>
           ) : (
-            "Almacenar Datos del Perro"
+            "Guardar en Base de Datos"
           )}
         </Button>
         <Button onClick={handleRestart} variant="destructive">

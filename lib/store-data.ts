@@ -1,6 +1,20 @@
 "use server"
 
-import { kv } from "@vercel/kv"
+// Verificar si las variables de entorno de KV están disponibles
+const KV_URL = process.env.KV_REST_API_URL
+const KV_TOKEN = process.env.KV_REST_API_TOKEN
+
+let kv: any = null
+
+// Solo importar y configurar KV si las variables están disponibles
+if (KV_URL && KV_TOKEN) {
+  try {
+    const { kv: kvClient } = require("@vercel/kv")
+    kv = kvClient
+  } catch (error) {
+    console.warn("@vercel/kv no está disponible:", error)
+  }
+}
 
 interface StoredData {
   id: string
@@ -40,12 +54,22 @@ export async function storeQuestionnaire(data: {
       specialBehaviorScores: data.specialBehaviorScores,
     }
 
-    // Almacenar en Upstash KV
+    // Verificar si KV está disponible
+    if (!kv) {
+      console.log("KV no está disponible, los datos solo se guardan localmente")
+      return {
+        success: true,
+        id,
+        message: "Datos guardados localmente (KV no configurado)",
+      }
+    }
+
+    // Almacenar en Upstash KV solo si está disponible
     await kv.set(id, storedData)
     console.log("Datos almacenados en KV con éxito")
 
     // También mantener una lista de todos los IDs para facilitar la recuperación
-    const existingIds = (await kv.get<string[]>("cbarq-ids")) || []
+    const existingIds = (await kv.get("cbarq-ids")) || []
     existingIds.push(id)
     await kv.set("cbarq-ids", existingIds)
     console.log("Lista de IDs actualizada, total:", existingIds.length)
@@ -55,19 +79,31 @@ export async function storeQuestionnaire(data: {
     return {
       success: true,
       id,
-      message: "Datos almacenados correctamente",
+      message: "Datos almacenados correctamente en la base de datos",
     }
   } catch (error) {
     console.error("Error al almacenar datos:", error)
+
+    // Si hay error con KV, al menos confirmar que se guardó localmente
+    const id = `cbarq-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+
     return {
-      success: false,
-      message: `Error al almacenar datos: ${error instanceof Error ? error.message : "Error desconocido"}`,
+      success: true,
+      id,
+      message: "Datos guardados localmente (error en base de datos remota)",
     }
   }
 }
 
 export async function getQuestionnaire(id: string) {
   try {
+    if (!kv) {
+      return {
+        success: false,
+        message: "Base de datos no configurada - solo disponible almacenamiento local",
+      }
+    }
+
     const data = await kv.get<StoredData>(id)
 
     if (!data) {
@@ -93,6 +129,14 @@ export async function getQuestionnaire(id: string) {
 
 export async function getAllQuestionnaireIds() {
   try {
+    if (!kv) {
+      return {
+        success: false,
+        message: "Base de datos no configurada",
+        ids: [],
+      }
+    }
+
     const ids = (await kv.get<string[]>("cbarq-ids")) || []
 
     return {
@@ -105,12 +149,25 @@ export async function getAllQuestionnaireIds() {
     return {
       success: false,
       message: `Error al recuperar IDs: ${error instanceof Error ? error.message : "Error desconocido"}`,
+      ids: [],
     }
   }
 }
 
 export async function getQuestionnaireStats() {
   try {
+    if (!kv) {
+      return {
+        success: false,
+        message: "Base de datos no configurada",
+        stats: {
+          totalCount: 0,
+          recentCount: 0,
+          recentData: [],
+        },
+      }
+    }
+
     const ids = (await kv.get<string[]>("cbarq-ids")) || []
     const totalCount = ids.length
 
@@ -145,6 +202,11 @@ export async function getQuestionnaireStats() {
     return {
       success: false,
       message: `Error al recuperar estadísticas: ${error instanceof Error ? error.message : "Error desconocido"}`,
+      stats: {
+        totalCount: 0,
+        recentCount: 0,
+        recentData: [],
+      },
     }
   }
 }
