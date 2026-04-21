@@ -16,13 +16,17 @@ if (KV_URL && KV_TOKEN) {
   }
 }
 
-interface StoredData {
+export interface StoredData {
   id: string
   timestamp: string
   anamnesisData: any
   cbarqAnswers: Record<string, number>
   factorScores: Record<string, any>
   specialBehaviorScores: Array<any>
+}
+
+export async function isKvConfigured() {
+  return Boolean(kv)
 }
 
 export async function storeQuestionnaire(data: {
