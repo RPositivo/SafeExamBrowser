@@ -106,59 +106,76 @@ export function Questionnaire() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col space-y-2">
-        <div className="flex justify-between items-center">
+      <div className="rounded-2xl border border-white/10 bg-card/70 p-4 sm:p-5">
+        <div className="mb-2 flex items-center justify-between gap-3">
           <span className="text-sm text-muted-foreground">Progreso</span>
           <span className="text-sm font-medium">{Math.round(calculateProgress())}%</span>
         </div>
         <Progress value={calculateProgress()} className="h-2" />
       </div>
 
-      <Tabs value={currentTab} onValueChange={setCurrentTab}>
-        <TabsList className="grid grid-cols-3 grid-rows-5 h-auto gap-1">
-          {Object.keys(factorNames).map((factor) => (
-            <TabsTrigger key={factor} value={factor} className="text-xs md:text-sm py-2">
-              {factorNames[factor]}
+      <Tabs value={currentTab} onValueChange={setCurrentTab} className="space-y-4">
+        <div className="space-y-3">
+          <div>
+            <h2 className="text-lg font-semibold text-foreground sm:text-xl">Secciones del cuestionario</h2>
+            <p className="text-sm text-muted-foreground">
+              Navegue por bloques cortos. En movil, cada pestaña ocupa mas alto para mejorar lectura y toque.
+            </p>
+          </div>
+          <TabsList className="grid h-auto w-full grid-cols-2 gap-2 bg-transparent p-0 sm:grid-cols-3 lg:grid-cols-4">
+            {Object.keys(factorNames).map((factor) => (
+              <TabsTrigger
+                key={factor}
+                value={factor}
+                className="border border-white/10 bg-card/70 px-2 py-3 text-left text-xs sm:text-sm"
+              >
+                {factorNames[factor]}
+              </TabsTrigger>
+            ))}
+            <TabsTrigger
+              value="special-behaviors"
+              className="border border-white/10 bg-card/70 px-2 py-3 text-left text-xs sm:text-sm"
+            >
+              Conductas Especiales
             </TabsTrigger>
-          ))}
-          <TabsTrigger value="special-behaviors" className="text-xs md:text-sm py-2">
-            Conductas Especiales
-          </TabsTrigger>
-        </TabsList>
+          </TabsList>
+        </div>
 
         {Object.entries(cbarqQuestions).map(([factor, questions]) => (
-          <TabsContent key={factor} value={factor} className="mt-4">
-            <Card>
-              <CardHeader>
+          <TabsContent key={factor} value={factor} className="mt-0">
+            <Card className="overflow-hidden">
+              <CardHeader className="border-b border-white/10 bg-primary/10">
                 <CardTitle>{factorNames[factor]}</CardTitle>
                 <CardDescription>
                   Evalúe con qué frecuencia su perro muestra los siguientes comportamientos
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 pt-4 sm:pt-5 md:pt-6">
                 {questions.map((question, index) => (
-                  <div key={question.id} className="space-y-3">
-                    <div className="font-medium">
+                  <div key={question.id} className="space-y-4 rounded-2xl border border-white/10 bg-background/30 p-4">
+                    <div className="text-sm font-medium leading-6 sm:text-base">
                       {index + 1}. {question.text}
                     </div>
                     <RadioGroup
                       value={answers[question.id]?.toString()}
                       onValueChange={(value) => handleAnswerChange(question.id, Number.parseInt(value))}
-                      className="flex justify-between"
+                      className="grid grid-cols-3 gap-2 sm:grid-cols-6"
                     >
                       {[0, 1, 2, 3, 4, NOT_OBSERVED].map((value) => (
-                        <div key={value} className="flex flex-col items-center gap-1">
+                        <Label
+                          key={value}
+                          htmlFor={`${question.id}-${value}`}
+                          className="flex min-h-[68px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-card/70 px-2 py-3 text-center text-xs font-medium transition-colors hover:bg-card"
+                        >
                           <RadioGroupItem value={value.toString()} id={`${question.id}-${value}`} />
-                          <Label htmlFor={`${question.id}-${value}`} className="text-xs">
-                            {value === NOT_OBSERVED ? "N/O" : value}
-                          </Label>
-                        </div>
+                          <span>{value === NOT_OBSERVED ? "N/O" : value}</span>
+                        </Label>
                       ))}
                     </RadioGroup>
-                    <div className="flex justify-between text-xs text-muted-foreground px-1">
+                    <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground sm:grid-cols-3">
                       <span>Nunca</span>
-                      <span className="ml-auto">Siempre</span>
-                      <span className="ml-4">No observado</span>
+                      <span className="text-right sm:text-center">Siempre</span>
+                      <span className="col-span-2 text-right sm:col-span-1">No observado</span>
                     </div>
                   </div>
                 ))}
@@ -167,38 +184,40 @@ export function Questionnaire() {
           </TabsContent>
         ))}
 
-        <TabsContent value="special-behaviors" className="mt-4">
-          <Card>
-            <CardHeader>
+        <TabsContent value="special-behaviors" className="mt-0">
+          <Card className="overflow-hidden">
+            <CardHeader className="border-b border-white/10 bg-primary/10">
               <CardTitle>Conductas Especiales</CardTitle>
               <CardDescription>
                 Estas conductas no corresponden a ningún factor específico pero son importantes para evaluar
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 pt-4 sm:pt-5 md:pt-6">
               {specialBehaviors.map((question, index) => (
-                <div key={question.id} className="space-y-3">
-                  <div className="font-medium">
+                <div key={question.id} className="space-y-4 rounded-2xl border border-white/10 bg-background/30 p-4">
+                  <div className="text-sm font-medium leading-6 sm:text-base">
                     {index + 1}. {question.text}
                   </div>
                   <RadioGroup
                     value={answers[question.id]?.toString()}
                     onValueChange={(value) => handleAnswerChange(question.id, Number.parseInt(value))}
-                    className="flex justify-between"
+                    className="grid grid-cols-3 gap-2 sm:grid-cols-6"
                   >
                     {[0, 1, 2, 3, 4, NOT_OBSERVED].map((value) => (
-                      <div key={value} className="flex flex-col items-center gap-1">
+                      <Label
+                        key={value}
+                        htmlFor={`${question.id}-${value}`}
+                        className="flex min-h-[68px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-card/70 px-2 py-3 text-center text-xs font-medium transition-colors hover:bg-card"
+                      >
                         <RadioGroupItem value={value.toString()} id={`${question.id}-${value}`} />
-                        <Label htmlFor={`${question.id}-${value}`} className="text-xs">
-                          {value === NOT_OBSERVED ? "N/O" : value}
-                        </Label>
-                      </div>
+                        <span>{value === NOT_OBSERVED ? "N/O" : value}</span>
+                      </Label>
                     ))}
                   </RadioGroup>
-                  <div className="flex justify-between text-xs text-muted-foreground px-1">
+                  <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground sm:grid-cols-3">
                     <span>Nunca</span>
-                    <span className="ml-auto">Siempre</span>
-                    <span className="ml-4">No observado</span>
+                    <span className="text-right sm:text-center">Siempre</span>
+                    <span className="col-span-2 text-right sm:col-span-1">No observado</span>
                   </div>
                 </div>
               ))}
@@ -207,9 +226,10 @@ export function Questionnaire() {
         </TabsContent>
       </Tabs>
 
-      <div className="flex justify-between">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <Button
           variant="outline"
+          className="w-full"
           onClick={() => {
             const factors = Object.keys(factorNames)
             const currentIndex = factors.indexOf(currentTab)
@@ -225,11 +245,12 @@ export function Questionnaire() {
         </Button>
 
         {currentTab === "special-behaviors" ? (
-          <Button onClick={() => setCurrentSection("results")} disabled={!isComplete()}>
+          <Button className="w-full" onClick={() => setCurrentSection("results")} disabled={!isComplete()}>
             Ver Resultados
           </Button>
         ) : (
           <Button
+            className="w-full"
             onClick={() => {
               const factors = Object.keys(factorNames)
               const currentIndex = factors.indexOf(currentTab)
@@ -244,7 +265,11 @@ export function Questionnaire() {
           </Button>
         )}
 
-        <Button variant="outline" onClick={() => setCurrentSection("anamnesis")}>
+        <Button
+          variant="outline"
+          className="w-full sm:col-span-2 xl:col-span-1"
+          onClick={() => setCurrentSection("anamnesis")}
+        >
           Volver a Anamnesis
         </Button>
       </div>

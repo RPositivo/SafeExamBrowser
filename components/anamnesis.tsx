@@ -177,8 +177,8 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
+      <Card className="overflow-hidden">
+        <CardHeader className="border-b border-white/10 bg-primary/10">
           <CardTitle>Información sobre su perro</CardTitle>
           <CardDescription>
             Por favor complete la siguiente información para ayudarnos a entender mejor a su perro y su situación
@@ -186,27 +186,31 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
         </CardHeader>
       </Card>
 
-      <div className="flex flex-col space-y-2">
-        <div className="flex justify-between items-center">
+      <div className="rounded-2xl border border-white/10 bg-card/70 p-4 sm:p-5">
+        <div className="mb-2 flex items-center justify-between gap-3">
           <span className="text-sm text-muted-foreground">Progreso del formulario</span>
           <span className="text-sm font-medium">{Math.round(calculateProgress())}%</span>
         </div>
         <Progress value={calculateProgress()} className="h-2" />
       </div>
 
-      <Tabs value={currentTab} onValueChange={setCurrentTab}>
-        <TabsList className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 h-auto gap-1">
+      <Tabs value={currentTab} onValueChange={setCurrentTab} className="space-y-4">
+        <TabsList className="grid h-auto w-full grid-cols-2 gap-2 bg-transparent p-0 lg:grid-cols-3">
           {tabs.map((tab) => (
-            <TabsTrigger key={tab.id} value={tab.id} className="text-xs md:text-sm py-2 px-1">
+            <TabsTrigger
+              key={tab.id}
+              value={tab.id}
+              className="border border-white/10 bg-card/70 px-2 py-3 text-left text-xs sm:text-sm"
+            >
               {tab.label}
             </TabsTrigger>
           ))}
         </TabsList>
 
         {/* Información Básica */}
-        <TabsContent value="general" className="mt-4">
-          <Card>
-            <CardHeader>
+        <TabsContent value="general" className="mt-0">
+          <Card className="overflow-hidden">
+            <CardHeader className="border-b border-white/10 bg-primary/10">
               <CardTitle>Información Básica</CardTitle>
               <CardDescription>Datos generales sobre su perro y usted</CardDescription>
             </CardHeader>
@@ -892,9 +896,10 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
         </TabsContent>
       </Tabs>
 
-      <div className="flex justify-between">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Button
           variant="outline"
+          className="w-full"
           onClick={() => {
             const currentIndex = tabs.findIndex((tab) => tab.id === currentTab)
             if (currentIndex > 0) {
@@ -910,12 +915,13 @@ export function Anamnesis({ onComplete }: AnamnesisProps) {
           <Button
             onClick={handleComplete}
             disabled={!isComplete()}
-            className="bg-secondary text-black hover:bg-secondary/90"
+            className="w-full bg-secondary text-black hover:bg-secondary/90"
           >
             Continuar al Cuestionario
           </Button>
         ) : (
           <Button
+            className="w-full"
             onClick={() => {
               const currentIndex = tabs.findIndex((tab) => tab.id === currentTab)
               if (currentIndex < tabs.length - 1) {

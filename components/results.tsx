@@ -429,15 +429,15 @@ export function Results({ answers, anamnesisData, onRestart }: ResultsProps) {
         </Card>
       )}
 
-      <Card>
-        <CardHeader>
+      <Card className="overflow-hidden">
+        <CardHeader className="border-b border-white/10 bg-primary/10">
           <CardTitle>Resultados de la Evaluación C-BARQ</CardTitle>
           <CardDescription>
             Estos son los resultados promedio para cada factor de comportamiento comparados con los valores de
             referencia de la población
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-4 sm:pt-5 md:pt-6">
           {isClient && Object.keys(factorScores).length > 0 ? (
             <div className="w-full">
               <FactorChart factorScores={factorScores} factorMetadata={factorScoresWithMetadata} />
@@ -452,9 +452,9 @@ export function Results({ answers, anamnesisData, onRestart }: ResultsProps) {
             <h3 className="text-lg font-medium mb-4">Desglose por Factor</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {Object.entries(factorScores).map(([factor, score]) => (
-                <div key={factor} className="flex justify-between items-center border-b pb-2">
-                  <span>{factorNames[factor]}</span>
-                  <div className="flex items-center gap-2">
+                <div key={factor} className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-background/30 p-4 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="text-sm font-medium sm:text-base">{factorNames[factor]}</span>
+                  <div className="flex flex-wrap items-center gap-2">
                     {factorScoresWithMetadata[factor]?.insufficientData ? (
                       <span className="text-gray-400">Datos insuficientes</span>
                     ) : (
@@ -544,12 +544,12 @@ export function Results({ answers, anamnesisData, onRestart }: ResultsProps) {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
+      <Card className="overflow-hidden">
+        <CardHeader className="border-b border-white/10 bg-primary/10">
           <CardTitle>Conductas Especiales</CardTitle>
           <CardDescription>Comportamientos que no corresponden a ningún factor específico</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-4 sm:pt-5 md:pt-6">
           {isClient ? (
             <div className="w-full">
               <SpecialBehaviorsChart behaviors={getSpecialBehaviorScores()} />
@@ -564,11 +564,11 @@ export function Results({ answers, anamnesisData, onRestart }: ResultsProps) {
 
       {showEmailForm ? (
         <Card>
-          <CardHeader>
+          <CardHeader className="border-b border-white/10 bg-primary/10">
             <CardTitle>Enviar Resultados por Correo Electrónico</CardTitle>
             <CardDescription>Los resultados se enviarán automáticamente a contacto@r-positivo.com</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-4 sm:pt-5 md:pt-6">
             <EmailForm answers={answers} anamnesisData={anamnesisData} />
           </CardContent>
         </Card>
